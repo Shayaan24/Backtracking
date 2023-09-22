@@ -1,0 +1,96 @@
+# include <iostream>
+# define N 4
+using namespace std;
+
+bool valid(int maze[N][N], int row, int col){
+	// Not out of Bounds AND an Acceptable Position
+	if(row!=N && col!=N && maze[row][col] == 1 && row >= 0 && col >= 0){
+		return true;
+	}
+	
+	// Out of Bounds or an Unacceptable Position
+	else{
+		return false;
+	}
+}
+
+bool move(int maze[N][N], int sol[N][N], int row, int col){
+	// Destination Reached
+	if(row == N-1 && col == N-1 && maze[row][col] == 1){
+		sol[row][col] = 1;
+		return true;
+	}
+		
+	// Destination not Reached: Placing Rat
+	if (valid(maze, row, col)){
+		// Back Track if we have already stepped here
+		if (sol[row][col] == 1){
+			return false;
+		}
+		
+		// Assume we have walked onto the square
+		sol[row][col] = 1;
+
+		// Move Down from square
+		if(move(maze, sol, row+1, col)){
+			return true;
+		}
+		
+		// Move up from square
+		if(move(maze, sol, row - 1, col)){
+			return true;
+		}
+		
+		// Move Right of square
+		if(move(maze, sol, row, col + 1)){
+			return true;
+		}
+		
+		// Move Left of square
+		if(move(maze, sol, row, col + 1)){
+			return true;
+		}
+		
+		// Backtracking if wrong path picked
+		sol[row][col] = 0;
+		return false;	
+	}
+	
+	else{
+		// No solution found
+		return false;	
+	}
+}
+
+void solution(int maze[N][N]){
+	int sol[N][N] = { { 0, 0, 0, 0 },
+                      { 0, 0, 0, 0 },
+                      { 0, 0, 0, 0 },
+                      { 0, 0, 0, 0 } };
+
+	// Print the solution if a solution is found
+	if (move(maze, sol, 0, 0)){
+		for(int i=0; i<N; i++){
+			for(int j=0; j<N; j++){
+				cout << sol[i][j] << " ";
+			}
+			cout << endl;
+		}
+		cout << endl << endl;
+		return;
+	}
+	else{
+		cout << "No Solution";
+	}
+}
+
+int main(){
+	int maze[N][N] = { { 1, 0, 0, 0 },
+                       { 1, 1, 0, 1 },
+                       { 0, 1, 0, 0 },
+                       { 1, 1, 1, 1 } };
+    
+	
+	solution(maze);
+	return 0;
+}
